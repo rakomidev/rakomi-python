@@ -1,7 +1,8 @@
 name: Publish to PyPI (trusted publishing)
 
 # Runs on a version tag (v<version>). The build job tests and builds the four distributions without any
-# id-token; the publish job, bound to the `release` environment, is the only job that can mint the
+# id-token; the publish job, bound to `release` (rakomi) or `release-<dist>` (each other distribution, as
+# PyPI takes one pending publisher per owner/repo/workflow/environment), is the only job that can mint the
 # OIDC token PyPI trusted publishing accepts, and uploads exactly the files the build job produced.
 
 on:
@@ -74,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
-      name: release
+      name: ${{ matrix.dist == 'rakomi' && 'release' || format('release-{0}', matrix.dist) }}
       url: https://pypi.org/project/${{ matrix.dist }}/
     permissions:
       id-token: write

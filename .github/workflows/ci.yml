@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: "0.12.19"
+          python-version: ${{ matrix.python }}
+          enable-cache: false
+
+      - name: Tests
+        run: uv run --no-project --with pytest pytest
+
+      - name: Build every distribution
+        run: |
+          set -euo pipefail
+          for d in packages/*/; do
+            uv build "${d}" --out-dir dist
+          done
+
+      - name: Check the distributions
+        run: uvx twine check --strict dist/*

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rakomi-mcp"
+version = "0.1.0"
+description = "Early Rakomi package for MCP integrations; currently provides OpenID Connect discovery"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "CRE8EVE Sp. z o.o." }]
+keywords = ["rakomi", "openid-connect", "oidc", "oauth2", "discovery"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Security",
+  "Typing :: Typed",
+]
+dependencies = ["rakomi>=0.1.0,<0.2"]
+
+[project.urls]
+Homepage = "https://rakomi.com"
+Source = "https://github.com/rakomidev/rakomi-python"
+Issues = "https://github.com/rakomidev/rakomi-python/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rakomi_mcp"]
